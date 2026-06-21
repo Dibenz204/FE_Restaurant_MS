@@ -1,52 +1,66 @@
-import { useState } from 'react'
-import './Login.css'
+import { useState } from 'react';
+import './Login.css';
 
-function Login({ onSwitch }) {
-  const [formData, setFormData] = useState({
+interface LoginProps {
+  onSwitch: () => void;
+}
+
+interface LoginFormData {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+interface FormErrors {
+  email?: string;
+  password?: string;
+}
+
+function Login({ onSwitch }: LoginProps) {
+  const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
     rememberMe: false,
-  })
-  const [showPassword, setShowPassword] = useState(false)
-  const [errors, setErrors] = useState({})
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
-    }))
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }))
+    }));
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
-  }
+  };
 
-  const validate = () => {
-    const newErrors = {}
+  const validate = (): FormErrors => {
+    const newErrors: FormErrors = {};
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required'
+      newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email'
+      newErrors.email = 'Please enter a valid email';
     }
     if (!formData.password) {
-      newErrors.password = 'Password is required'
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters'
+      newErrors.password = 'Password must be at least 6 characters';
     }
-    return newErrors
-  }
+    return newErrors;
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const validationErrors = validate()
-    setErrors(validationErrors)
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
       // TODO: Call authentication API
-      console.log('Login submitted:', formData)
+      console.log('Login submitted:', formData);
     }
-  }
+  };
 
   return (
     <div className="login-container">
@@ -152,7 +166,7 @@ function Login({ onSwitch }) {
         </p>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;

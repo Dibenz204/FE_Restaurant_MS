@@ -1,65 +1,85 @@
-import { useState } from 'react'
-import './Register.css'
+import { useState } from 'react';
+import './Register.css';
 
-function Register({ onSwitch }) {
-  const [formData, setFormData] = useState({
+interface RegisterProps {
+  onSwitch: () => void;
+}
+
+interface RegisterFormData {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  agreeTerms: boolean;
+}
+
+interface FormErrors {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  agreeTerms?: string;
+}
+
+function Register({ onSwitch }: RegisterProps) {
+  const [formData, setFormData] = useState<RegisterFormData>({
     fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
     agreeTerms: false,
-  })
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [errors, setErrors] = useState({})
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
-    }))
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }))
+    }));
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
-  }
+  };
 
-  const validate = () => {
-    const newErrors = {}
+  const validate = (): FormErrors => {
+    const newErrors: FormErrors = {};
     if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required'
+      newErrors.fullName = 'Full name is required';
     }
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required'
+      newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email'
+      newErrors.email = 'Please enter a valid email';
     }
     if (!formData.password) {
-      newErrors.password = 'Password is required'
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters'
+      newErrors.password = 'Password must be at least 8 characters';
     }
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password'
+      newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match'
+      newErrors.confirmPassword = 'Passwords do not match';
     }
     if (!formData.agreeTerms) {
-      newErrors.agreeTerms = 'You must agree to the terms'
+      newErrors.agreeTerms = 'You must agree to the terms';
     }
-    return newErrors
-  }
+    return newErrors;
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const validationErrors = validate()
-    setErrors(validationErrors)
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
       // TODO: Call registration API
-      console.log('Register submitted:', formData)
+      console.log('Register submitted:', formData);
     }
-  }
+  };
 
   return (
     <div className="register-container">
@@ -216,7 +236,7 @@ function Register({ onSwitch }) {
         </p>
       </div>
     </div>
-  )
+  );
 }
 
-export default Register
+export default Register;
