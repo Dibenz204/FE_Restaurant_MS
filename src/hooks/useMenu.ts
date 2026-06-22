@@ -12,6 +12,5 @@ export function useMenuItems() {
   return useQuery({
     queryKey: ['menu-items'],
     queryFn: getMenuItems,
-    enabled: false,
   });
 }

@@ -1,21 +1,36 @@
 export interface Category {
-  id: number;
+  categoryId: number;
   name: string;
-  description?: string;
+  note?: string;
+  status: number;
 }
 
 export interface MenuItemImage {
-  id: number;
+  menuItemImageId: number;
   menuItemId: number;
-  imageUrl: string;
-  isPrimary: boolean;
+  urlImg: string;
+  note?: string;
+  status: number;
 }
 
 export interface MenuItem {
-  id: number;
+  menuItemId: number;
   name: string;
-  description?: string;
   price: number;
+  description?: string;
+  available: boolean;
+  status: number;
+}
+
+export interface MenuItemCategory {
+  id: number;
   categoryId: number;
+  menuItemId: number;
+  status: number;
+}
+
+/** Aggregated view — menu item with its categories and images */
+export interface MenuItemWithDetails extends MenuItem {
+  categories?: Category[];
   images?: MenuItemImage[];
 }
